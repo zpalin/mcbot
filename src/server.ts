@@ -6,18 +6,25 @@ async function main() {
   const minecraft = new MinecraftServer()
 
   const server = net.createServer((socket) => {
-    console.log("Socket connected.")
+    console.log("Client connected.")
 
     socket.on("data", (message) => {
       minecraft.server.stdin.write(message)
     })
 
-    minecraft.server.stdout.on("data", (message) => {
-      socket.write(message)
-    })
+    function dataHandler(data) {
+      if (socket && !socket.destroyed) {
+        socket.write(data)
+      } else {
+        console.log("Trying to write to closed socket.")
+      }
+    }
+
+    minecraft.server.stdout.on("data", dataHandler)
 
     socket.on("close", () => {
-      console.log("Socket closed.")
+      minecraft.server.stdout.removeListener("data", dataHandler)
+      console.log("Client closed.")
     })
   })
 
