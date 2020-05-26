@@ -8,6 +8,7 @@ async function main() {
   const discord = new Discord.Client()
   await discord.login(DISCORD_TOKEN)
   const minecraftChannel = await discord.channels.fetch(DISCORD_MC_CHANNEL_ID) as TextChannel
+  let pendingList = false
 
   if (!minecraftChannel || minecraftChannel.type !== "text") {
     throw new Error("Error loading channel")
@@ -22,8 +23,13 @@ async function main() {
     if (author.username === "Minecraft Bot") return
 
     if (channel.type === "text" && channel.name === minecraftChannel.name) {
-      console.log(`<${author.username}> ${content}`)
-      minecraft.sendCommand(`/say <${author.username}> ${content}`)
+      if (content.startsWith("/who")) {
+        pendingList = true
+        minecraft.sendCommand("/list")
+      } else {
+        console.log(`<${author.username}> ${content}`)
+        minecraft.sendCommand(`/say <${author.username}> ${content}`)
+      }
     }
   })
 
@@ -51,6 +57,15 @@ async function main() {
     if (match) {
       const playerName = match[1]
       minecraftChannel.send(`${playerName} has left the game.`)
+    }
+  })
+
+  minecraft.handleMessage((message: string) => {
+    const match = message.match(new RegExp(/players online: (.+)/))
+    if (pendingList && match) {
+      const playerNames = match[1]
+      minecraftChannel.send(`Players online: ${playerNames}`)
+      pendingList = false
     }
   })
 }

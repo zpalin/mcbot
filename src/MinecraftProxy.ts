@@ -34,7 +34,7 @@ export class MinecraftProxy {
   }
 
   sendCommand(command: string) {
-    this.client.write(`${command} \n`)
+    this.client.write(`${command}\n`)
   }
 
   handleMessage(messageHandler: MinecraftServerMessageHandler) {
