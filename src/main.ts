@@ -27,7 +27,6 @@ async function main() {
     }
   })
 
-
   minecraft.handleMessage((message: string) => {
     const match = message.match(/[minecraft\/DedicatedServer]]: <.+>/)
     if (match) {
