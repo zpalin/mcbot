@@ -5,9 +5,9 @@ import { MinecraftProxy } from "./MinecraftProxy"
 
 
 async function main() {
-  const client = new Discord.Client()
-  await client.login(DISCORD_TOKEN)
-  const minecraftChannel = await client.channels.fetch(DISCORD_MC_CHANNEL_ID) as TextChannel
+  const discord = new Discord.Client()
+  await discord.login(DISCORD_TOKEN)
+  const minecraftChannel = await discord.channels.fetch(DISCORD_MC_CHANNEL_ID) as TextChannel
 
   if (!minecraftChannel || minecraftChannel.type !== "text") {
     throw new Error("Error loading channel")
@@ -17,7 +17,7 @@ async function main() {
   const minecraft = new MinecraftProxy()
   await minecraft.connect()
 
-  client.on("message", (msg: Message) => {
+  discord.on("message", (msg: Message) => {
     const { channel, content, author } = msg
     if (author.username === "Minecraft Bot") return
 
