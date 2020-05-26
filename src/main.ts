@@ -61,10 +61,10 @@ async function main() {
   })
 
   minecraft.handleMessage((message: string) => {
-    const match = message.match(new RegExp(/players online: (.+)/))
+    const match = message.match(new RegExp(/players online:(.+)/))
     if (pendingList && match) {
       const playerNames = match[1]
-      minecraftChannel.send(`Players online: ${playerNames}`)
+      minecraftChannel.send(`Players online:${playerNames}`)
       pendingList = false
     }
   })
